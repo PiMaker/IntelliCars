@@ -14,7 +14,7 @@ import (
 
 var (
 	width, height int
-	font          draw2d.FontData
+	font draw2d.FontData
 )
 
 func reshape(window *glfw.Window, w, h int) {
@@ -78,16 +78,19 @@ func main() {
     
     intellicars.Init(float64(width))
     
-    go updateLoop()
-    
-	for !window.ShouldClose() {
+    go updateLoop(window)
+    drawLoop(window)
+}
+
+func drawLoop(window *glfw.Window) {
+    for !window.ShouldClose() {
         display()
         window.SwapBuffers()
-		glfw.PollEvents()
+        glfw.PollEvents()
 	}
 }
 
-func updateLoop() {
+func updateLoop(window *glfw.Window) {
     ticker := time.NewTicker(time.Second / 60)
 	for {
 		intellicars.Update()

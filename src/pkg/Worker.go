@@ -13,12 +13,15 @@ var (
 func Init(screenWidth float64) {
     currentScroll = screenWidth
     width = screenWidth
+    InitPhysics()
     InitTerrain()
+    
+    GenerateCar()
 }
 
 func Update() {
     UpdateTerrain(currentScroll)
-    currentScroll += 1
+    UpdatePhysics()
 }
 
 func Draw(gc draw2dgl.GraphicContext) {

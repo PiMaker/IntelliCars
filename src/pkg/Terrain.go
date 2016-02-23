@@ -21,11 +21,13 @@ var (
 func UpdateTerrain(rightmost float64) {
     for lines[len(lines) - 1].X2 < rightmost {
         last := lines[len(lines) - 1]
-        lines = append(lines, Line {
+        line := Line {
             X1: last.X2,
             X2: last.X2 + segment,
             Y1: last.Y2,
-            Y2: randomY(rightmost + last.X2) })
+            Y2: randomY(rightmost + last.X2)}
+        lines = append(lines, line)
+        RegisterTerrainLine(line)
     }
 }
 
@@ -36,6 +38,7 @@ func InitTerrain() {
         X2: -segment,
         Y1: minHeight,
         Y2: minHeight }
+    RegisterTerrainLine(lines[0])
         
     perlinGenerator = perlin.NewPerlin(2., 2., 3, rand.Int63())
 }
