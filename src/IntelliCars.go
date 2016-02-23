@@ -1,49 +1,34 @@
-package IntelliCars
+package main
 
 import (
-	"image/color"
-	"log"
 	"runtime"
+    "time"
 
 	"github.com/go-gl/gl/v2.1/gl"
 	"github.com/go-gl/glfw/v3.1/glfw"
 	"github.com/llgcode/draw2d"
 	"github.com/llgcode/draw2d/draw2dgl"
-	"github.com/llgcode/draw2d/draw2dkit"
+    
+    "./pkg"
 )
 
 var (
-	// global rotation
-	rotate        int
 	width, height int
-	redraw        = true
 	font          draw2d.FontData
 )
 
 func reshape(window *glfw.Window, w, h int) {
 	gl.ClearColor(1, 1, 1, 1)
-	/* Establish viewing area to cover entire window. */
 	gl.Viewport(0, 0, int32(w), int32(h))
-	/* PROJECTION Matrix mode. */
 	gl.MatrixMode(gl.PROJECTION)
-	/* Reset project matrix. */
 	gl.LoadIdentity()
-	/* Map abstract coords directly to window coords. */
 	gl.Ortho(0, float64(w), 0, float64(h), -1, 1)
-	/* Invert Y axis so increasing Y goes down. */
 	gl.Scalef(1, -1, 1)
-	/* Shift origin up to upper-left corner. */
 	gl.Translatef(0, float32(-h), 0)
 	gl.Enable(gl.BLEND)
 	gl.BlendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA)
 	gl.Disable(gl.DEPTH_TEST)
 	width, height = w, h
-	redraw = true
-}
-
-// Ask to refresh
-func invalidate() {
-	redraw = true
 }
 
 func display() {
@@ -52,17 +37,13 @@ func display() {
 	gl.LineWidth(1)
 	gc := draw2dgl.NewGraphicContext(width, height)
 	gc.SetFontData(draw2d.FontData{
-	Name:   "luxi",
-	Family: draw2d.FontFamilyMono,
-	Style:  draw2d.FontStyleBold | draw2d.FontStyleItalic})
+		Name:   "luxi",
+		Family: draw2d.FontFamilyMono,
+		Style:  draw2d.FontStyleBold | draw2d.FontStyleItalic})
 
-	gc.BeginPath()
-	draw2dkit.RoundedRectangle(gc, 200, 200, 600, 600, 100, 100)
+	intellicars.Draw(*gc)
 
-	gc.SetFillColor(color.RGBA{0, 0, 0, 0xff})
-	gc.Fill()
-
-	gl.Flush() /* Single buffered, so needs a flush. */
+	gl.Flush()
 }
 
 func init() {
@@ -75,8 +56,8 @@ func main() {
 		panic(err)
 	}
 	defer glfw.Terminate()
-	width, height = 800, 800
-	window, err := glfw.CreateWindow(width, height, "Show RoundedRect", nil, nil)
+	width, height = 1280, 720
+	window, err := glfw.CreateWindow(width, height, "IntelliCars", nil, nil)
 	if err != nil {
 		panic(err)
 	}
@@ -94,25 +75,33 @@ func main() {
 	}
 
 	reshape(window, width, height)
+    
+    intellicars.Init(float64(width))
+    
+    go updateLoop()
+    
 	for !window.ShouldClose() {
-		if redraw {
-			display()
-			window.SwapBuffers()
-			redraw = false
-		}
+        display()
+        window.SwapBuffers()
 		glfw.PollEvents()
-	//		time.Sleep(2 * time.Second)
+	}
+}
+
+func updateLoop() {
+    ticker := time.NewTicker(time.Second / 60)
+	for {
+		intellicars.Update()
+		<-ticker.C
 	}
 }
 
 func onChar(w *glfw.Window, char rune) {
-	log.Println(char)
 }
 
 func onKey(w *glfw.Window, key glfw.Key, scancode int, action glfw.Action, mods glfw.ModifierKey) {
 	switch {
-		case key == glfw.KeyEscape && action == glfw.Press,
-		key == glfw.KeyQ && action == glfw.Press:
-		w.SetShouldClose(true)
+        case key == glfw.KeyEscape && action == glfw.Press,
+            key == glfw.KeyQ && action == glfw.Press:
+            w.SetShouldClose(true)
 	}
 }
