@@ -4,7 +4,7 @@ import (
     "github.com/llgcode/draw2d/draw2dgl"
     "github.com/aquilax/go-perlin"
 	"image/color"
-    "math/rand"
+	"time"
 )
 
 var (
@@ -36,11 +36,11 @@ func InitTerrain() {
     lines[0] = Line {
         X1: -segment*2,
         X2: -segment,
-        Y1: minHeight,
+        Y1: -minHeight,
         Y2: minHeight }
     RegisterTerrainLine(lines[0])
-        
-    perlinGenerator = perlin.NewPerlin(2., 2., 3, rand.Int63())
+    
+    perlinGenerator = perlin.NewPerlin(2., 2., 3, time.Now().UnixNano())
 }
 
 func DrawTerrain(gc draw2dgl.GraphicContext) {

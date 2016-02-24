@@ -11,30 +11,49 @@ var (
 )
 
 type PhysicsCar interface {
-    GetPhysicsShapes() []*chipmunk.Shape
+    GetPhysicsShape() *chipmunk.Shape
+    GetPhysicsWheels() []Wheel
 }
 
 func InitPhysics() {
     space = chipmunk.NewSpace()
-    space.Gravity = vect.Vect{0, 200}
+    space.Gravity = vect.Vect{0, 300}
     cars = make([]PhysicsCar, 0)
 }
 
 func RegisterPhysicsCar(car PhysicsCar) {
     cars = append(cars, car)
     
-    body := chipmunk.NewBody(vect.Float(1), vect.Float(car.GetPhysicsShapes()[0].Moment(float32(1))))
-    body.SetPosition(vect.Vect{vect.Float(500), vect.Float(100)})
+    polyshape := car.GetPhysicsShape()
+    polyshape.Group = 1;
+    polybody := chipmunk.NewBody(vect.Float(10), vect.Float(100))
+    polybody.SetPosition(vect.Vect{vect.Float(500), vect.Float(10)})
+    polybody.AddShape(polyshape)
+    space.AddBody(polybody)
     
-    for _, shape := range car.GetPhysicsShapes() {
+    for _, wheel := range car.GetPhysicsWheels() {
+        shape := wheel.shape
+        shape.Group = 1;
+        body := chipmunk.NewBody(vect.Float(1), vect.Float(shape.Moment(float32(1))))
+        body.SetPosition(wheel.center)
         body.AddShape(shape)
+        body.UserData = true
+        space.AddBody(body)
+        //middle := shape.GetAsCircle().Radius
+        joint := chipmunk.NewPivotJoint(polybody, body)
+        space.AddConstraint(joint)
     }
-    
-    space.AddBody(body)
 }
 
 func UpdatePhysics() {
-    space.Step(vect.Float(1.0 / 600.0))
+    for _, body := range space.Bodies {
+        rotate, found := body.UserData.(bool)
+        if found && rotate {
+            body.AddTorque(25)
+        }
+    }
+    
+    space.Step(vect.Float(1.0 / 60.0))
 }
 
 func RegisterTerrainLine(line Line) {

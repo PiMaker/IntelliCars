@@ -16,12 +16,24 @@ func Init(screenWidth float64) {
     InitPhysics()
     InitTerrain()
     
-    GenerateCar()
+    GenerateRandomCar()
 }
 
 func Update() {
-    UpdateTerrain(currentScroll)
     UpdatePhysics()
+    
+    if (len(space.Bodies) > 0) {
+        max := space.Bodies[0]
+        for _, body := range space.Bodies {
+            if (float64(body.Position().X) > float64(max.Position().X)) {
+                max = body
+            }
+        }
+        
+        currentScroll = float64(max.Position().X) + (width / 2)
+    }
+    
+    UpdateTerrain(currentScroll + (width / 2))
 }
 
 func Draw(gc draw2dgl.GraphicContext) {
