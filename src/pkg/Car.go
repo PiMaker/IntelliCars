@@ -26,12 +26,14 @@ func GenerateRandomCar() Car {
     car.wheels[0] = Wheel{}
     car.wheels[0].center = vect.Vect{vect.Float(200),30}
     car.wheels[0].shape = chipmunk.NewCircle(vect.Vect{0,0}, 30)
-    car.wheels[0].shape.SetElasticity(0.4)
+    car.wheels[0].shape.SetElasticity(0.2)
+    car.wheels[0].shape.SetFriction(1.0)
     
     car.wheels[1] = Wheel{}
     car.wheels[1].center = vect.Vect{vect.Float(0),60}
     car.wheels[1].shape = chipmunk.NewCircle(vect.Vect{0,0}, 22)
-    car.wheels[1].shape.SetElasticity(0.4)
+    car.wheels[1].shape.SetElasticity(0.2)
+    car.wheels[1].shape.SetFriction(1.0)
     
     car.shapes = make([]*chipmunk.Shape, len(car.wheels) + 1)
     car.shapes[0] = car.shape

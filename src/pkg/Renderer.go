@@ -66,6 +66,9 @@ func DrawPhysicsShapes(gc draw2dgl.GraphicContext, shapes []*chipmunk.Shape) {
             gc.Rotate(float64(t.Shape.Body.Angle()))
             draw2dkit.Circle(gc, float64(0), float64(0), float64(t.Radius))
             gc.FillStroke()
+            gc.MoveTo(float64(0), float64(0))
+            gc.LineTo(float64(0), float64(t.Radius))
+            gc.Stroke()
         } else if shape.ShapeType() == chipmunk.ShapeType_Polygon {
             t := shape.GetAsPolygon()
             gc.Translate(float64(shape.Body.Position().X), float64(shape.Body.Position().Y))

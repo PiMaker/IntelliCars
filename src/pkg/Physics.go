@@ -26,7 +26,7 @@ func RegisterPhysicsCar(car PhysicsCar) {
     
     polyshape := car.GetPhysicsShape()
     polyshape.Group = 1;
-    polybody := chipmunk.NewBody(vect.Float(10), vect.Float(100))
+    polybody := chipmunk.NewBody(vect.Float(10), vect.Float(25000))
     polybody.SetPosition(vect.Vect{vect.Float(500), vect.Float(10)})
     polybody.AddShape(polyshape)
     space.AddBody(polybody)
@@ -40,7 +40,7 @@ func RegisterPhysicsCar(car PhysicsCar) {
         body.UserData = true
         space.AddBody(body)
         //middle := shape.GetAsCircle().Radius
-        joint := chipmunk.NewPivotJoint(polybody, body)
+        joint := chipmunk.NewPivotJointAnchor(polybody, body, vect.Vect{body.Position().X/4, body.Position().Y/4}, vect.Vect{0,0})
         space.AddConstraint(joint)
     }
 }
@@ -49,11 +49,11 @@ func UpdatePhysics() {
     for _, body := range space.Bodies {
         rotate, found := body.UserData.(bool)
         if found && rotate {
-            body.AddTorque(25)
+            body.AddTorque(0)
         }
     }
     
-    space.Step(vect.Float(1.0 / 60.0))
+    space.Step(vect.Float(1.0 / 600.0))
 }
 
 func RegisterTerrainLine(line Line) {
