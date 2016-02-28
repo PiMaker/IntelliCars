@@ -1,8 +1,9 @@
 package intellicars
 
 import (
-	"github.com/vova616/chipmunk"
-	"github.com/vova616/chipmunk/vect"
+	"../../chipmunk"
+	"../../chipmunk/vect"
+	"fmt"
 )
 
 var (
@@ -17,7 +18,7 @@ type PhysicsCar interface {
 
 func InitPhysics() {
     space = chipmunk.NewSpace()
-    space.Gravity = vect.Vect{0, 300}
+    space.Gravity = vect.Vect{0, 500}
     cars = make([]PhysicsCar, 0)
 }
 
@@ -26,34 +27,34 @@ func RegisterPhysicsCar(car PhysicsCar) {
     
     polyshape := car.GetPhysicsShape()
     polyshape.Group = 1;
-    polybody := chipmunk.NewBody(vect.Float(10), vect.Float(25000))
-    polybody.SetPosition(vect.Vect{vect.Float(500), vect.Float(10)})
+    
+    fmt.Print(polyshape.Moment(16))
+    fmt.Print(" => ")
+    fmt.Println(chipmunk.PolygonMomentOptimized(polyshape.GetAsPolygon(), 16))
+    
+    polybody := chipmunk.NewBody(vect.Float(16), polyshape.Moment(float32(16)))
     polybody.AddShape(polyshape)
     space.AddBody(polybody)
     
     for _, wheel := range car.GetPhysicsWheels() {
         shape := wheel.shape
         shape.Group = 1;
-        body := chipmunk.NewBody(vect.Float(1), vect.Float(shape.Moment(float32(1))))
+        body := chipmunk.NewBody(vect.Float(2), vect.Float(shape.Moment(float32(2))))
         body.SetPosition(wheel.center)
         body.AddShape(shape)
-        body.UserData = true
         space.AddBody(body)
-        //middle := shape.GetAsCircle().Radius
-        joint := chipmunk.NewPivotJointAnchor(polybody, body, vect.Vect{body.Position().X/4, body.Position().Y/4}, vect.Vect{0,0})
+        body.SetPosition(vect.Vect{vect.Float(500), vect.Float(10)})
+        joint := chipmunk.NewPivotJointAnchor(polybody, body, vect.Vect{wheel.center.X, wheel.center.Y}, vect.Vector_Zero)
         space.AddConstraint(joint)
+        motor := chipmunk.NewSimpleMotor(polybody, body, -wheel.shape.GetAsCircle().Radius/10)
+        space.AddConstraint(motor)
     }
+    
+    polybody.SetPosition(vect.Vect{vect.Float(500), vect.Float(10)})
 }
 
 func UpdatePhysics() {
-    for _, body := range space.Bodies {
-        rotate, found := body.UserData.(bool)
-        if found && rotate {
-            body.AddTorque(0)
-        }
-    }
-    
-    space.Step(vect.Float(1.0 / 600.0))
+    space.Step(vect.Float(1.0 / 60.0))
 }
 
 func RegisterTerrainLine(line Line) {

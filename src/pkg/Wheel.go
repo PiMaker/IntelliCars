@@ -1,8 +1,8 @@
 package intellicars
 
 import (
-    "github.com/vova616/chipmunk/vect"
-    "github.com/vova616/chipmunk"
+    "../../chipmunk/vect"
+    "../../chipmunk"
 )
 
 type Wheel struct {

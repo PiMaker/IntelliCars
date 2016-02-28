@@ -2,7 +2,7 @@ package intellicars
 
 import (
 	"github.com/llgcode/draw2d/draw2dgl"
-	"github.com/vova616/chipmunk"
+	"../../chipmunk"
 	"image/color"
 	"github.com/llgcode/draw2d/draw2dkit"
 )

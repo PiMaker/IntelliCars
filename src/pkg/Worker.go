@@ -3,6 +3,8 @@ package intellicars
 import (
 	"github.com/llgcode/draw2d/draw2dgl"
     "math"
+	"math/rand"
+	"time"
 )
 
 var (
@@ -16,6 +18,17 @@ func Init(screenWidth float64) {
     InitPhysics()
     InitTerrain()
     
+    rand.Seed(time.Now().UnixNano())
+    
+    GenerateRandomCar()
+    GenerateRandomCar()
+    GenerateRandomCar()
+    GenerateRandomCar()
+    GenerateRandomCar()
+    GenerateRandomCar()
+    GenerateRandomCar()
+    GenerateRandomCar()
+    GenerateRandomCar()
     GenerateRandomCar()
 }
 
