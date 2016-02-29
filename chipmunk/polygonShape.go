@@ -51,7 +51,7 @@ func (poly *PolygonShape) Moment(mass float32) vect.Float {
 	sum1 := vect.Float(0)
 	sum2 := vect.Float(0)
 
-	println("using bad Moment calculation")
+	//println("using bad Moment calculation")
 	offset := vect.Vect{0, 0}
 
 	for i := 0; i < poly.NumVerts; i++ {

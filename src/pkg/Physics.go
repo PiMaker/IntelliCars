@@ -3,7 +3,6 @@ package intellicars
 import (
 	"../../chipmunk"
 	"../../chipmunk/vect"
-	"fmt"
 )
 
 var (
@@ -27,10 +26,6 @@ func RegisterPhysicsCar(car PhysicsCar) {
     
     polyshape := car.GetPhysicsShape()
     polyshape.Group = 1;
-    
-    fmt.Print(polyshape.Moment(16))
-    fmt.Print(" => ")
-    fmt.Println(chipmunk.PolygonMomentOptimized(polyshape.GetAsPolygon(), 16))
     
     polybody := chipmunk.NewBody(vect.Float(16), polyshape.Moment(float32(16)))
     polybody.AddShape(polyshape)

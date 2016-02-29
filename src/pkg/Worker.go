@@ -32,6 +32,11 @@ func Init(screenWidth float64) {
     GenerateRandomCar()
 }
 
+func Reshape(screenWidth, screenHeight float64) {
+    currentScroll = currentScroll - width + screenWidth
+    width = screenWidth
+}
+
 func Update() {
     UpdatePhysics()
     

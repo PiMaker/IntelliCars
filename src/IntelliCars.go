@@ -29,6 +29,7 @@ func reshape(window *glfw.Window, w, h int) {
 	gl.BlendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA)
 	gl.Disable(gl.DEPTH_TEST)
 	width, height = w, h
+    intellicars.Reshape(float64(width), float64(height))
 }
 
 func display() {
