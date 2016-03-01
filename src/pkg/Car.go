@@ -3,7 +3,6 @@ package intellicars
 import (
 	"../../chipmunk"
     "../../chipmunk/vect"
-    "github.com/llgcode/draw2d/draw2dgl"
     "math/rand"
     "../../convexhull"
     "math"
@@ -13,45 +12,20 @@ type Car struct {
     shape *chipmunk.Shape
     wheels []Wheel
     shapes []*chipmunk.Shape
+    
+    maxDistance float64
+    framesBehind int
 }
 
-func GenerateTestCar() Car {
-    car := Car {}
+func GenerateFromParent(parent Car) *Car {
+    parent.framesBehind = 0
+    parent.maxDistance = 0
     
-    verts := []vect.Vect {
-        vect.Vect{vect.Float(0), 0},
-        vect.Vect{vect.Float(0), 60},
-        vect.Vect{vect.Float(200), 30}}
-    car.shape = chipmunk.NewPolygon(verts, vect.Vector_Zero)
-    car.shape.SetFriction(0)
-    car.shape.SetElasticity(0.1)
-    
-    car.wheels = make([]Wheel, 2)
-    
-    car.wheels[0] = Wheel{}
-    car.wheels[0].center = vect.Vect{vect.Float(0),30}
-    car.wheels[0].shape = chipmunk.NewCircle(vect.Vect{0,0}, 60)
-    car.wheels[0].shape.SetElasticity(0.3)
-    car.wheels[0].shape.SetFriction(0.99)
-    
-    car.wheels[1] = Wheel{}
-    car.wheels[1].center = vect.Vect{vect.Float(200),30}
-    car.wheels[1].shape = chipmunk.NewCircle(vect.Vect{0,0}, 50)
-    car.wheels[1].shape.SetElasticity(0.3)
-    car.wheels[1].shape.SetFriction(0.99)
-    
-    car.shapes = make([]*chipmunk.Shape, len(car.wheels) + 1)
-    car.shapes[0] = car.shape
-    for i, wheel := range car.wheels {
-        car.shapes[i + 1] = wheel.shape
-    }
-        
-    RegisterPhysicsCar(car)
-    AddShape(car)
-    return car
+    RegisterPhysicsCar(parent)
+    return &parent
 }
 
-func GenerateRandomCar() Car {
+func GenerateRandomCar() *Car {
     car := Car {}
     var verts chipmunk.Vertices
     
@@ -115,9 +89,11 @@ func GenerateRandomCar() Car {
         car.shapes[i + 1] = wheel.shape
     }
     
+    car.framesBehind = 0
+    car.maxDistance = 0
+    
     RegisterPhysicsCar(car)
-    AddShape(car)
-    return car
+    return &car
 }
 
 func (car Car) GetPhysicsWheels() []Wheel {
@@ -126,8 +102,4 @@ func (car Car) GetPhysicsWheels() []Wheel {
 
 func (car Car) GetPhysicsShape() *chipmunk.Shape {
     return car.shape
-}
-
-func (car Car) icdraw(gc draw2dgl.GraphicContext) {
-    DrawPhysicsShapes(gc, car.shapes)
 }

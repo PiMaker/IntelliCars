@@ -5,47 +5,27 @@ import (
 	"../../chipmunk"
 	"image/color"
 	"github.com/llgcode/draw2d/draw2dkit"
+    "math"
 )
-
-/*
-Shape defines a drawable shape.
-*/
-type Shape interface {
-    icdraw(gc draw2dgl.GraphicContext)
-}
 
 var (
     debugRender = false
-    
-    shapes []Shape
 )
 
-func AddShape(shape Shape)  {
-    if shapes == nil {
-        shapes = make([]Shape, 0)
-    }
-    
-    shapes = append(shapes, shape)
-}
-
-func ClearShapes() {
-    shapes = make([]Shape, 0)
-}
-
-func GetShapes() []Shape {
-    return shapes
-}
-
 func DrawShapes(gc draw2dgl.GraphicContext) {
-    for _, shape := range shapes {
-        shape.icdraw(gc)
+    for _, car := range logicCars {
+        if car.framesBehind == -1 {
+            drawPhysicsShapes(gc, car.shapes, 0)
+        } else {
+            drawPhysicsShapes(gc, car.shapes, uint8(math.Max(float64(car.framesBehind/2), 0xaa)))
+        }
     }
 }
 
-func DrawPhysicsShapes(gc draw2dgl.GraphicContext, shapes []*chipmunk.Shape) {
+func drawPhysicsShapes(gc draw2dgl.GraphicContext, shapes []*chipmunk.Shape, highlight uint8) {
     gc.Save()
-    gc.SetFillColor(color.RGBA{0x33, 0x33, 0x33, 0xff})
-    gc.SetStrokeColor(color.RGBA{0xaa, 0xaa, 0xaa, 0xff})
+    gc.SetFillColor(color.RGBA{highlight, 0xaa, 0xaa, 0xff})
+    gc.SetStrokeColor(color.RGBA{0x66, 0x66, 0x66, 0xff})
     gc.SetLineWidth(2)
     for _, shape := range shapes {
         gc.Save()
