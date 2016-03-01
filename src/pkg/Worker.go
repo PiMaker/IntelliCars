@@ -10,11 +10,17 @@ import (
 var (
     currentScroll float64
     width float64
+    heightTranslation float64
+    height float64
 )
 
-func Init(screenWidth float64) {
+func Init(screenWidth, screenHeight float64) {
     currentScroll = screenWidth
     width = screenWidth
+    
+    height = screenHeight
+    heightTranslation = 0
+    
     InitPhysics()
     InitTerrain()
     
@@ -35,6 +41,8 @@ func Init(screenWidth float64) {
 func Reshape(screenWidth, screenHeight float64) {
     currentScroll = currentScroll - width + screenWidth
     width = screenWidth
+    heightTranslation += screenHeight - height
+    height = screenHeight
 }
 
 func Update() {
@@ -56,7 +64,7 @@ func Update() {
 
 func Draw(gc draw2dgl.GraphicContext) {
     gc.Save()
-    gc.Translate(math.Min(0, width - currentScroll), 0)
+    gc.Translate(math.Min(0, width - currentScroll), heightTranslation)
     DrawTerrain(gc)
     DrawShapes(gc)
     gc.Restore()

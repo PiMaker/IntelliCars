@@ -13,7 +13,7 @@ var (
     perlinGenerator *perlin.Perlin
     
     segment float64 = 30
-    minHeight float64 = 450
+    minHeight float64 = 500
     randomMultiplier float64 = 250
     perlinDivider float64 = 500
 )

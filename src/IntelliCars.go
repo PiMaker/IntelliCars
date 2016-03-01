@@ -3,13 +3,13 @@ package main
 import (
 	"runtime"
     "time"
+    
+    "./pkg"
 
 	"github.com/go-gl/gl/v2.1/gl"
 	"github.com/go-gl/glfw/v3.1/glfw"
 	"github.com/llgcode/draw2d"
 	"github.com/llgcode/draw2d/draw2dgl"
-    
-    "./pkg"
 )
 
 var (
@@ -77,7 +77,7 @@ func main() {
 
 	reshape(window, width, height)
     
-    intellicars.Init(float64(width))
+    intellicars.Init(float64(width), float64(height))
     
     go updateLoop(window)
     drawLoop(window)
