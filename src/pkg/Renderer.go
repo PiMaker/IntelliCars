@@ -17,7 +17,7 @@ func DrawShapes(gc draw2dgl.GraphicContext) {
         if car.framesBehind == -1 {
             drawPhysicsShapes(gc, car.shapes, 0)
         } else {
-            drawPhysicsShapes(gc, car.shapes, uint8(math.Max(float64(car.framesBehind/2), 0xaa)))
+            drawPhysicsShapes(gc, car.shapes, uint8(math.Min(math.Max(float64(car.framesBehind), 0xaa), 0xff)))
         }
     }
 }

@@ -6,7 +6,7 @@ import (
 	"math/rand"
 	"time"
     "sort"
-    "strconv"
+    //"strconv"
 )
 
 var (
@@ -81,7 +81,7 @@ func Update() {
     }
     
     if done {
-        newRound()
+        //newRound()
     }
 }
 
@@ -105,8 +105,8 @@ func newRound() {
     // Genetic algorithm
     sort.Sort(logicCars) // Sort by fitness
     newLogicCars := make(CarList, 20)
-    newLogicCars[0] = logicCars[0] // Reuse the first two ones
-    newLogicCars[1] = logicCars[1] //
+    newLogicCars[0] = CopyCar(logicCars[0]) // Reuse the first two ones
+    newLogicCars[1] = CopyCar(logicCars[1])
     for i := 2; i < 10; i++ { // Derive next 8 from first
         newLogicCars[i] = GenerateFromParent(*logicCars[0])
     }

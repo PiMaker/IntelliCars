@@ -17,6 +17,18 @@ type Car struct {
     framesBehind int
 }
 
+func CopyCar(parent *Car) *Car {
+    car := Car {}
+    car.framesBehind = 0
+    car.maxDistance = 0
+    car.shape = parent.shape
+    car.shapes = parent.shapes
+    car.wheels = parent.wheels
+    
+    RegisterPhysicsCar(car)
+    return &car
+}
+
 func GenerateFromParent(parent Car) *Car {
     parent.framesBehind = 0
     parent.maxDistance = 0

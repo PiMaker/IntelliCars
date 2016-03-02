@@ -8,6 +8,7 @@ import (
 var (
     cars []PhysicsCar
     space *chipmunk.Space
+    terrainLines []Line
 )
 
 type PhysicsCar interface {
@@ -16,9 +17,22 @@ type PhysicsCar interface {
 }
 
 func InitPhysics() {
+    if terrainLines == nil {
+        terrainLines = make([]Line, 0)
+    }
+    
     space = chipmunk.NewSpace()
     space.Gravity = vect.Vect{0, 500}
     cars = make([]PhysicsCar, 0)
+    
+    if len(terrainLines) > 0 {
+        for _, line := range terrainLines {
+            terrain := chipmunk.NewBodyStatic()
+            shape := chipmunk.NewSegment(vect.Vect{vect.Float(line.X1), vect.Float(line.Y1)}, vect.Vect{vect.Float(line.X2), vect.Float(line.Y2)}, 0)
+            terrain.AddShape(shape)
+            space.AddBody(terrain)
+        }
+    }
 }
 
 func RegisterPhysicsCar(car PhysicsCar) {
@@ -27,7 +41,7 @@ func RegisterPhysicsCar(car PhysicsCar) {
     polyshape := car.GetPhysicsShape()
     polyshape.Group = 1;
     
-    polybody := chipmunk.NewBody(vect.Float(16), polyshape.Moment(float32(16)))
+    polybody := chipmunk.NewBody(vect.Float(16), polyshape.Moment(float32(16))*2)
     polybody.AddShape(polyshape)
     space.AddBody(polybody)
     
@@ -53,6 +67,7 @@ func UpdatePhysics() {
 }
 
 func RegisterTerrainLine(line Line) {
+    terrainLines = append(terrainLines, line)
     terrain := chipmunk.NewBodyStatic()
     shape := chipmunk.NewSegment(vect.Vect{vect.Float(line.X1), vect.Float(line.Y1)}, vect.Vect{vect.Float(line.X2), vect.Float(line.Y2)}, 0)
     terrain.AddShape(shape)
